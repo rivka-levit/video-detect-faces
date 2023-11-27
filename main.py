@@ -48,12 +48,10 @@ class VideoFaceDetector:
     def draw_cats(self, frame):
         """Detect faces and draw cats instead of them."""
 
-        faces = self.cascade.detectMultiScale(frame, 1.1, 8)
+        faces = self.cascade.detectMultiScale(frame, 1.7, 8)
 
         try:
             for x, y, w, h in faces:
-                if 700 < w < 300:
-                    continue
                 frame[y:y + self.cat_h, x:x + self.cat_w] = self.cat
         except ValueError:
             pass
@@ -63,11 +61,9 @@ class VideoFaceDetector:
     def draw_rectangles(self, frame):
         """Detect faces and draw rectangles around them."""
 
-        faces = self.cascade.detectMultiScale(frame, 1.1, 8)
+        faces = self.cascade.detectMultiScale(frame, 1.7, 8)
 
         for x, y, w, h in faces:
-            if 700 < w < 300:
-                continue
             cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 255, 255), 4)
 
         return frame
@@ -75,18 +71,16 @@ class VideoFaceDetector:
     def blur_faces(self, frame):
         """Detect faces and draw blur instead of them."""
 
-        faces = self.cascade.detectMultiScale(frame, 1.1, 8)
+        faces = self.cascade.detectMultiScale(frame, 1.3, 10)
 
         for x, y, w, h in faces:
-            if 700 < w < 300:
-                continue
             face_place = frame[y:y + h, x:x + w]
-            blur = cv2.GaussianBlur(face_place, (81, 81), 0)
+            blur = cv2.GaussianBlur(face_place, (101, 101), 0)
             frame[y:y + h, x:x + w] = blur
 
         return frame
 
 
 if __name__ == '__main__':
-    dtr = VideoFaceDetector('source/video.mp4')
-    dtr.detect_faces('b')
+    dtr = VideoFaceDetector('source/smile.mp4')
+    dtr.detect_faces('c')
