@@ -26,6 +26,7 @@ class VideoFaceDetector:
 
         while True:
             frame_exists, frame = self.video.read()
+
             if frame_exists:
                 if mode == 'r':
                     frame = self.draw_rectangles(frame)
@@ -33,8 +34,12 @@ class VideoFaceDetector:
                     frame = self.blur_faces(frame)
                 elif mode == 'c':
                     frame = self.draw_cats(frame)
+                else:
+                    raise AttributeError('Invalid mode! Allowed modes: "r", '
+                                         '"b", "c", by default it is "r".')
 
                 self.output.write(frame)
+
             else:
                 break
 
@@ -44,20 +49,22 @@ class VideoFaceDetector:
         """Detect faces and draw cats instead of them."""
 
         faces = self.cascade.detectMultiScale(frame, 1.1, 8)
+
         try:
             for x, y, w, h in faces:
                 if 700 < w < 300:
                     continue
-                print(y, x, h, w)
                 frame[y:y + self.cat_h, x:x + self.cat_w] = self.cat
         except ValueError:
             pass
+
         return frame
 
     def draw_rectangles(self, frame):
         """Detect faces and draw rectangles around them."""
 
         faces = self.cascade.detectMultiScale(frame, 1.1, 8)
+
         for x, y, w, h in faces:
             if 700 < w < 300:
                 continue
@@ -69,11 +76,12 @@ class VideoFaceDetector:
         """Detect faces and draw blur instead of them."""
 
         faces = self.cascade.detectMultiScale(frame, 1.1, 8)
+
         for x, y, w, h in faces:
             if 700 < w < 300:
                 continue
-            ROI = frame[y:y + h, x:x + w]
-            blur = cv2.GaussianBlur(ROI, (51, 51), 0)
+            face_place = frame[y:y + h, x:x + w]
+            blur = cv2.GaussianBlur(face_place, (81, 81), 0)
             frame[y:y + h, x:x + w] = blur
 
         return frame
@@ -81,4 +89,4 @@ class VideoFaceDetector:
 
 if __name__ == '__main__':
     dtr = VideoFaceDetector('source/video.mp4')
-    dtr.detect_faces('c')
+    dtr.detect_faces('b')
