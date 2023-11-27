@@ -73,7 +73,7 @@ class VideoFaceDetector:
         return frame
 
     def blur_faces(self, frame):
-        """Detect faces and draw blur surface instead of them."""
+        """Detect faces and draw blur area instead of them."""
 
         faces = self.cascade.detectMultiScale(frame, 1.3, 10)
 
