@@ -3,9 +3,9 @@
 
 #### Three modes are available:
 
-**'r'** - faces will be marked by rectangles around them,  
-**'b'** - faces will be blurred,  
-**'c'** - draw cats instead of detected faces.
+- **'r'** - faces will be marked by rectangles around them,  
+- **'b'** - faces will be blurred,  
+- **'c'** - draw cats instead of detected faces.
 
 
 ![Frame Example](source/frame_example.jpg)
