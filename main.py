@@ -8,6 +8,9 @@ class VideoFaceDetector:
 
     def __init__(self, input_video=None):
         self.video = cv2.VideoCapture(input_video)
+        self.cat = cv2.imread('source/cat.jpg')
+        self.cat_w = self.cat.shape[1]
+        self.cat_h = self.cat.shape[0]
         self.fps = self.video.get(cv2.CAP_PROP_FPS)
         self.width = int(self.video.get(cv2.CAP_PROP_FRAME_WIDTH))
         self.height = int(self.video.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -18,7 +21,7 @@ class VideoFaceDetector:
             (self.width, self.height)
         )
 
-    def detect_faces_rects(self, mode='r'):
+    def detect_faces(self, mode='r'):
         """Detect faces and mark in by rectangles."""
 
         while True:
@@ -28,22 +31,47 @@ class VideoFaceDetector:
                     frame = self.draw_rectangles(frame)
                 elif mode == 'b':
                     frame = self.blur_faces(frame)
+                elif mode == 'c':
+                    frame = self.draw_cats(frame)
+
                 self.output.write(frame)
             else:
                 break
 
         self.output.release()
 
+    def draw_cats(self, frame):
+        """Detect faces and draw cats instead of them."""
+
+        faces = self.cascade.detectMultiScale(frame, 1.1, 8)
+        try:
+            for x, y, w, h in faces:
+                if 700 < w < 300:
+                    continue
+                print(y, x, h, w)
+                frame[y:y + self.cat_h, x:x + self.cat_w] = self.cat
+        except ValueError:
+            pass
+        return frame
+
     def draw_rectangles(self, frame):
+        """Detect faces and draw rectangles around them."""
+
         faces = self.cascade.detectMultiScale(frame, 1.1, 8)
         for x, y, w, h in faces:
+            if 700 < w < 300:
+                continue
             cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 255, 255), 4)
 
         return frame
 
     def blur_faces(self, frame):
+        """Detect faces and draw blur instead of them."""
+
         faces = self.cascade.detectMultiScale(frame, 1.1, 8)
         for x, y, w, h in faces:
+            if 700 < w < 300:
+                continue
             ROI = frame[y:y + h, x:x + w]
             blur = cv2.GaussianBlur(ROI, (51, 51), 0)
             frame[y:y + h, x:x + w] = blur
@@ -53,4 +81,4 @@ class VideoFaceDetector:
 
 if __name__ == '__main__':
     dtr = VideoFaceDetector('source/video.mp4')
-    dtr.detect_faces_rects('b')
+    dtr.detect_faces('c')
