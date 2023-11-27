@@ -21,8 +21,12 @@ class VideoFaceDetector:
             (self.width, self.height)
         )
 
-    def detect_faces(self, mode='r'):
-        """Detect faces and mark in by rectangles."""
+    def detect_faces(self, mode='r') -> None:
+        """
+        Detect faces and mark in by rectangles.
+        :param mode: "r" - rectangles, "b" - blur, "c" - cats
+        :return: None
+        """
 
         while True:
             frame_exists, frame = self.video.read()
@@ -69,7 +73,7 @@ class VideoFaceDetector:
         return frame
 
     def blur_faces(self, frame):
-        """Detect faces and draw blur instead of them."""
+        """Detect faces and draw blur surface instead of them."""
 
         faces = self.cascade.detectMultiScale(frame, 1.3, 10)
 
